@@ -1,58 +1,86 @@
 #!/usr/bin/env python3
 
-numero_inicial = 1
-numero_final = 250
+# Starting and ending numbers for the prime number search range
+start_number = 1
+end_number = 250
 
 
-def es_primo(numero: int) -> bool:
-    """Devuelve True si el número es primo, False en caso contrario."""
-    if numero < 2:
+def is_prime(number: int) -> bool:
+    """
+    Returns True if the given number is prime, False otherwise.
+
+    A prime number is greater than or equal to 2 and only divisible
+    by 1 and itself. For efficiency, the divisor check runs up to
+    the square root of the number.
+    """
+    if number < 2:
         return False
 
-    for divisor in range(2, int(numero ** 0.5) + 1):
-        if numero % divisor == 0:
+    # Check divisibility from 2 up to sqrt(number)
+    for divisor in range(2, int(number ** 0.5) + 1):
+        if number % divisor == 0:
             return False
 
     return True
 
 
 def main():
-    print(f"Buscando números primos entre {numero_inicial} y {numero_final}...")
-    lista_primos = []
+    try:
+        print(f"Searching for prime numbers between {start_number} and {end_number}...")
+        prime_list = []
 
-    # Calcular números primos en el rango
-    for numero in range(numero_inicial, numero_final + 1):
-        if es_primo(numero):
-            lista_primos.append(numero)
+        # Collect all prime numbers in the range
+        for number in range(start_number, end_number + 1):
+            if is_prime(number):
+                prime_list.append(number)
 
-    print(f"Total de números primos encontrados: {len(lista_primos)}\n")
-    print("Lista de números primos:\n")
+        # Extra safety: confirm the list is not empty
+        if not prime_list:
+            print("No prime numbers were found in the specified range.")
+            return
 
-    # Mostrar en pantalla, 10 por línea
-    for i, primo in enumerate(lista_primos, start=1):
-        print(f"{primo:4}", end="  ")
-        if i % 10 == 0:
-            print()
+        print(f"Total prime numbers found: {len(prime_list)}\n")
+        print("List of prime numbers:\n")
 
-    print("\n")
+        # Display primes in columns, 10 per line
+        for index, prime in enumerate(prime_list, start=1):
+            print(f"{prime:4}", end="  ")
+            if index % 10 == 0:
+                print()
 
-    # Nombre de archivo pedido por el laboratorio
-    nombre_archivo = "results.txt"
-    print(f"Guardando resultados en '{nombre_archivo}'...")
+        print("\n")
 
-    # Guardar resultados en results.txt
-    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        archivo.write("NÚMEROS PRIMOS ENTRE 1 Y 250\n")
-        archivo.write(f"Total de números primos encontrados: {len(lista_primos)}\n\n")
-        archivo.write("Lista completa de números primos:\n")
+        # Output file required by the lab instructions
+        output_file = "results.txt"
+        print(f"Saving results to '{output_file}'...")
 
-        for i, primo in enumerate(lista_primos, start=1):
-            archivo.write(f"{primo:4}  ")
-            if i % 10 == 0:
-                archivo.write("\n")
+        # Handle file write errors
+        try:
+            with open(output_file, "w", encoding="utf-8") as file:
+                file.write("PRIME NUMBERS BETWEEN 1 AND 250\n")
+                file.write(f"Total prime numbers found: {len(prime_list)}\n\n")
+                file.write("Complete list of prime numbers:\n")
 
-    print(f"Archivo generado: {nombre_archivo}")
+                for index, prime in enumerate(prime_list, start=1):
+                    file.write(f"{prime:4}  ")
+                    if index % 10 == 0:
+                        file.write("\n")
+
+            print(f"File successfully created: {output_file}")
+
+        except OSError as e:
+            print("Error while trying to write to the file:")
+            print(f"Exception type: {type(e).__name__}")
+            print(f"Details: {e}")
+            return
+
+    except Exception as e:
+        # Captures unexpected errors in execution
+        print("An unexpected error occurred during script execution.")
+        print(f"Exception type: {type(e).__name__}")
+        print(f"Details: {e}")
 
 
 if __name__ == "__main__":
+    # Ensures main() executes only when the script is run directly
     main()
